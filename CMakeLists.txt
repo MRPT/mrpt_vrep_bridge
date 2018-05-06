@@ -51,7 +51,7 @@ endif()
 
 # VREP Version - TODO
 
-set(${PROJECT_NAME}_CMAKE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # User Options
 ################################################################################
@@ -84,14 +84,9 @@ if(BUILD_TESTING)
   enable_testing()
 endif()
 
-# glog
-find_package(Glog REQUIRED)
-include_directories(BEFORE ${GLOG_INCLUDE_DIRS})
-
-
 # doxygen
 # Generate documentation using Doxygen
-# find_package(Doxygen QUIET)
+find_package(Doxygen QUIET)
 
 if (DOXYGEN_FOUND)
   add_subdirectory(doc)
