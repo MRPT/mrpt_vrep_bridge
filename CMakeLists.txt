@@ -1,4 +1,4 @@
-PROJECT(mrpt_vrep_bridge LANGUAGES C CXX)
+PROJECT(mrpt_V-REP_bridge LANGUAGES C CXX)
 
 # CMake project configuration
 ################################################################################
@@ -49,9 +49,32 @@ else()
         "Compiler \"${CMAKE_CXX_COMPILER_ID}\" is not yet supported by ${PROJECT_NAME}")
 endif()
 
-# VREP Version - TODO
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+
+#MRPT Lib
+################################################################################
+
+find_package(MRPT 1.5 REQUIRED)
+message(STATUS "MRPT_VERSION: ${MRPT_VERSION}")
+if (MRPT_VERSION VERSION_LESS 1.9.9)
+  find_package(MRPT REQUIRED base gui obs maps opengl graphslam)
+else()
+  find_package(MRPT REQUIRED gui obs maps opengl graphslam)
+endif()
+
+if (MRPT_VERSION VERSION_LESS 2.0.0)
+  set(CMAKE_CXX_FLAGS "-Wno-deprecated-declarations ${CMAKE_CXX_FLAGS}")
+endif()
+
+
+if(${MRPT_VERSION} LESS 1.5.0)
+  set(WARN_MSG "${WARN_MSG}\"${PROJECT_NAME}\" requires MRPT version 1.5.0 or higher ")
+  set(WARN_MSG "${WARN_MSG} - Current MRPT version: ${MRPT_VERSION}\n")
+  set(WARN_MSG "${WARN_MSG}Ignoring target \"${PROJECT_NAME}\"...")
+  MESSAGE(WARNING ${WARN_MSG})
+
+
 
 # User Options
 ################################################################################
@@ -80,7 +103,7 @@ set(third_party "${CMAKE_SOURCE_DIR}/3rdparty/")
 set(EXTERNAL_DEPS "")
 
 if(BUILD_TESTING)
-  add_subdirectory("${third_party}/googletest")
+  #add_subdirectory("${third_party}/googletest")
   enable_testing()
 endif()
 
@@ -103,8 +126,8 @@ add_subdirectory(conversions)
 # Configure files
 ################################################################################
 
-configure_file(cmake/${PROJECT_NAME}ConfigVersion.cmake.in
-    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" @ONLY)
+#configure_file(cmake/${PROJECT_NAME}ConfigVersion.cmake.in
+ #   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" @ONLY)
 # TODO - How to use it
-configure_file(cmake/${PROJECT_NAME}ConfigVersion.hpp.in
-    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}.hpp" @ONLY)
+#configure_file(cmake/${PROJECT_NAME}ConfigVersion.hpp.in
+ #   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}.hpp" @ONLY)
