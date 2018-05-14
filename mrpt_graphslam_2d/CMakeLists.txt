@@ -27,8 +27,6 @@ if (EXISTS "${PROJECT_ROOT_DIR}/../V-REP")
   message(STATUS "Found V-REP")
   set (V-REP_ROOT "${PROJECT_ROOT_DIR}/../" CACHE "V-REP root dir" STRING)
 
-  execute_process (COMMAND "/bin/bash" "-c" "cd ${V-REP_ROOT}; echo -n `pwd`" OUTPUT_VARIABLE V-REP_ROOT)
-
 
   set (V-REP_PATH "${PROJECT_ROOT_DIR}/../V-REP/programming/" CACHE "The V-REP build path" STRING)
 
@@ -63,4 +61,4 @@ if (EXISTS "${PROJECT_ROOT_DIR}/../V-REP")
 else()
   message(STATUS "Kindly Install V-REP")
 
-endif(EXISTS "${PROJECT_ROOT_DIR}/../V-REP")  
+endif()  

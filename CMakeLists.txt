@@ -1,4 +1,4 @@
-PROJECT(mrpt_V-REP_bridge LANGUAGES C CXX)
+PROJECT(mrpt_vrep_bridge LANGUAGES C CXX)
 
 # CMake project configuration
 ################################################################################
@@ -85,7 +85,7 @@ set(third_party "${CMAKE_SOURCE_DIR}/3rdparty/")
 set(EXTERNAL_DEPS "")
 
 if(BUILD_TESTING)
-  #add_subdirectory("${third_party}/googletest")
+  add_subdirectory("${third_party}/googletest")
   enable_testing()
 endif()
 
@@ -108,8 +108,8 @@ add_subdirectory(conversions)
 # Configure files
 ################################################################################
 
-#configure_file(cmake/${PROJECT_NAME}ConfigVersion.cmake.in
- #   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" @ONLY)
+configure_file(cmake/${PROJECT_NAME}ConfigVersion.cmake.in
+    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" @ONLY)
 # TODO - How to use it
-#configure_file(cmake/${PROJECT_NAME}ConfigVersion.hpp.in
- #   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}.hpp" @ONLY)
+configure_file(cmake/${PROJECT_NAME}ConfigVersion.hpp.in
+    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}.hpp" @ONLY)
