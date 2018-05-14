@@ -24,31 +24,43 @@ set(PROJECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../)
 ################################################################################
 
 if (EXISTS "${PROJECT_ROOT_DIR}/../V-REP")
-  message(STATUS "Found VREP")
+  message(STATUS "Found V-REP")
   set (V-REP_ROOT "${PROJECT_ROOT_DIR}/../" CACHE "V-REP root dir" STRING)
 
   execute_process (COMMAND "/bin/bash" "-c" "cd ${V-REP_ROOT}; echo -n `pwd`" OUTPUT_VARIABLE V-REP_ROOT)
 
-  #Create symbolic links from Addon to V-REP directory
-  execute_process (COMMAND "/bin/bash" "-c" "cd ${V-REP_ROOT}; Addon/links.sh ${V-REP_ROOT}")
 
   set (V-REP_PATH "${PROJECT_ROOT_DIR}/../V-REP/programming/" CACHE "The V-REP build path" STRING)
+
   set (SOURCES remoteApi/bubbleRob_test.cpp
     ${V-REP_ROOT}/V-REP/programming/remoteApi/extApi.c
-    ${V-REP_ROOT}/V-REP/programming/remoteApi/shared_memory.c
+    ${V-REP_ROOT}/V-REP/programming/common/shared_memory.c
+    ${V-REP_ROOT}/V-REP/programming/remoteApi/extApi.h
+    ${V-REP_ROOT}/V-REP/programming/remoteApi/extApiPlatform.h
+    ${V-REP_ROOT}/V-REP/programming/include/shared_memory.h
     ${V-REP_ROOT}/V-REP/programming/remoteApi/extApiPlatform.c)
 
   set (EXTRA_LIBRARIES pthread)
-  include_directories (${V-REP_PATH}/remoteApi ${V-REP_PATH}/include)
-  add_definitions (-DNON_MATLAB_PARSING=1)
-  add_definitions (-DMAX_EXT_API_CONNECTIONS=255)
-  add_library (V-REPClient SHARED ${SOURCES})
-  target_link_libraries (V-REPClient ${EXTRA_LIBRARIES})
 
+  include_directories (${V-REP_PATH}/remoteApi ${V-REP_PATH}/include)
+  
+  add_definitions( -Dpthread )
+  add_definitions (-DNON_MATLAB_PARSING)
+  add_definitions (-DMAX_EXT_API_CONNECTIONS=255)
+  
+  add_library (test_Client SHARED ${SOURCES})
+  
+  
+  add_executable(bubbleRob_test ${SOURCES} )
+
+  target_link_libraries (bubbleRob_test test_Client ${EXTRA_LIBRARIES})
+  target_link_libraries (bubbleRob_test test_Client rt)
+
+  
   #Compile the api
-  #execute_process (COMMAND "/bin/bash" "-c" "cd ${V-REP_ROOT}/V-REP/programming/v-repSampleApi/mrpt_graphslam_2d/remoteApi; qmake bubbleRob_test.pro; make")
+  #execute_process (COMMAND "/bin/bash" "-c" "cd ${V-REP_ROOT}/V-REP/programming/v-repSampleApi; qmake bubbleRob_test.pro; make")
 
 else()
-  message(STATUS "Kindly Install VREP")
+  message(STATUS "Kindly Install V-REP")
 
 endif(EXISTS "${PROJECT_ROOT_DIR}/../V-REP")  

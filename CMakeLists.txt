@@ -55,24 +55,6 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 #MRPT Lib
 ################################################################################
 
-find_package(MRPT 1.5 REQUIRED)
-message(STATUS "MRPT_VERSION: ${MRPT_VERSION}")
-if (MRPT_VERSION VERSION_LESS 1.9.9)
-  find_package(MRPT REQUIRED base gui obs maps opengl graphslam)
-else()
-  find_package(MRPT REQUIRED gui obs maps opengl graphslam)
-endif()
-
-if (MRPT_VERSION VERSION_LESS 2.0.0)
-  set(CMAKE_CXX_FLAGS "-Wno-deprecated-declarations ${CMAKE_CXX_FLAGS}")
-endif()
-
-
-if(${MRPT_VERSION} LESS 1.5.0)
-  set(WARN_MSG "${WARN_MSG}\"${PROJECT_NAME}\" requires MRPT version 1.5.0 or higher ")
-  set(WARN_MSG "${WARN_MSG} - Current MRPT version: ${MRPT_VERSION}\n")
-  set(WARN_MSG "${WARN_MSG}Ignoring target \"${PROJECT_NAME}\"...")
-  MESSAGE(WARNING ${WARN_MSG})
 
 
 
