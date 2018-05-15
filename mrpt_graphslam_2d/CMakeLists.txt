@@ -23,7 +23,7 @@ set(PROJECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../)
 #V-REP Config
 ################################################################################
 
-if (EXISTS "${PROJECT_ROOT_DIR}/../V-REP")
+if (EXISTS "$ENV{VREP}")
   message(STATUS "Found V-REP")
   set (V-REP_ROOT "${PROJECT_ROOT_DIR}/../" CACHE "V-REP root dir" STRING)
 
