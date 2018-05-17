@@ -54,7 +54,8 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 #MRPT Lib
 ################################################################################
-
+find_package(MRPT REQUIRED graphslam)
+message(STATUS "MRPT_VERSION: ${MRPT_VERSION}")
 
 
 

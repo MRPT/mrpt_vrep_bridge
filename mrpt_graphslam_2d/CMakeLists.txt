@@ -18,29 +18,26 @@ if (BUILD_TESTING)
     ${test_output_directory}/${PROJECT_TEST_NAME})
 endif()
 
-set(PROJECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../)
 
 #V-REP Config
 ################################################################################
 
 if (EXISTS "$ENV{VREP}")
-  message(STATUS "Found V-REP")
-  set (V-REP_ROOT "${PROJECT_ROOT_DIR}/../" CACHE "V-REP root dir" STRING)
+  message(STATUS "Found VREP")
+  set (VREP_ROOT "$ENV{VREP}" CACHE "VREP root dir" STRING)
 
 
-  set (V-REP_PATH "${PROJECT_ROOT_DIR}/../V-REP/programming/" CACHE "The V-REP build path" STRING)
+  set (VREP_PATH "$ENV{VREP}/programming" CACHE "The VREP build path" STRING)
 
-  set (SOURCES remoteApi/bubbleRob_test.cpp
-    ${V-REP_ROOT}/V-REP/programming/remoteApi/extApi.c
-    ${V-REP_ROOT}/V-REP/programming/common/shared_memory.c
-    ${V-REP_ROOT}/V-REP/programming/remoteApi/extApi.h
-    ${V-REP_ROOT}/V-REP/programming/remoteApi/extApiPlatform.h
-    ${V-REP_ROOT}/V-REP/programming/include/shared_memory.h
-    ${V-REP_ROOT}/V-REP/programming/remoteApi/extApiPlatform.c)
+  set (SOURCES 
+    ${VREP_PATH}/remoteApi/extApi.h
+    ${VREP_PATH}/remoteApi/extApiPlatform.h
+    ${VREP_PATH}/include/shared_memory.h
+    ${VREP_PATH}/remoteApi/extApi.c
+    ${VREP_PATH}/common/shared_memory.c
+    ${VREP_PATH}/remoteApi/extApiPlatform.c)
 
-  set (EXTRA_LIBRARIES pthread)
-
-  include_directories (${V-REP_PATH}/remoteApi ${V-REP_PATH}/include)
+  include_directories (${VREP_PATH}/remoteApi ${VREP_PATH}/include)
   
   add_definitions( -Dpthread )
   add_definitions (-DNON_MATLAB_PARSING)
@@ -49,16 +46,16 @@ if (EXISTS "$ENV{VREP}")
   add_library (test_Client SHARED ${SOURCES})
   
   
-  add_executable(bubbleRob_test ${SOURCES} )
-
-  target_link_libraries (bubbleRob_test test_Client ${EXTRA_LIBRARIES})
-  target_link_libraries (bubbleRob_test test_Client rt)
+  add_executable(bubbleRob_test remoteApi/bubbleRob_test.cpp)
+  
+  target_link_libraries (
+  	bubbleRob_test 
+  	test_Client 
+  	pthread
+  	rt)
 
   
-  #Compile the api
-  #execute_process (COMMAND "/bin/bash" "-c" "cd ${V-REP_ROOT}/V-REP/programming/v-repSampleApi; qmake bubbleRob_test.pro; make")
-
 else()
-  message(STATUS "Kindly Install V-REP")
+  message(FATAL_ERROR "Can't detect V-REP installation. Have you exported the VREP environment variable to the corresponding path?")
 
 endif()  
