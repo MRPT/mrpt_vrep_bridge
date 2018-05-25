@@ -29,15 +29,17 @@ if (EXISTS "$ENV{VREP}")
 
   set (VREP_PATH "$ENV{VREP}/programming" CACHE "The VREP build path" STRING)
 
-  set (SOURCES 
+  set (SOURCES
+  	include/mrpt_bridge/vrep_conversion.h 
     ${VREP_PATH}/remoteApi/extApi.h
     ${VREP_PATH}/remoteApi/extApiPlatform.h
     ${VREP_PATH}/include/shared_memory.h
     ${VREP_PATH}/remoteApi/extApi.c
     ${VREP_PATH}/common/shared_memory.c
-    ${VREP_PATH}/remoteApi/extApiPlatform.c)
+    ${VREP_PATH}/remoteApi/extApiPlatform.c
+    remoteApi/vrep_conversion.cpp)
 
-  include_directories (${VREP_PATH}/remoteApi ${VREP_PATH}/include)
+  include_directories (${VREP_PATH}/remoteApi ${VREP_PATH}/include include)
   
   add_definitions( -Dpthread )
   add_definitions (-DNON_MATLAB_PARSING)
@@ -46,13 +48,15 @@ if (EXISTS "$ENV{VREP}")
   add_library (test_Client SHARED ${SOURCES})
   
   
-  add_executable(bubbleRob_test remoteApi/bubbleRob_test.cpp)
+  add_executable(remoteApi_test remoteApi/remoteApi_test.cpp)
   
   target_link_libraries (
-  	bubbleRob_test 
+  	remoteApi_test 
   	test_Client 
   	pthread
-  	rt)
+  	rt
+    ${MRPT_LIBS}
+    )
 
   
 else()

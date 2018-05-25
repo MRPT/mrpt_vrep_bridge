@@ -1,0 +1,31 @@
+#ifndef VREP_CONVERSION_H
+#define VREP_CONVERSION_H
+
+#include <stdint.h>
+#include <string>
+
+#include <mrpt/version.h>
+
+#include "extApi.h"
+
+namespace mrpt
+{
+namespace obs
+{
+class CObservation2DRangeScan;
+}
+}
+
+namespace mrpt
+{
+namespace poses
+{
+class CPose3D;
+}
+}
+namespace vrep_bridge
+{ bool convert(const simxUChar* _dataSignal, const simxInt& _dataCount, const simxFloat& _maxScanDistance,
+        const simxFloat& _scanningAngle,const mrpt::poses::CPose3D& _pose,mrpt::obs::CObservation2DRangeScan& _obj);
+}  
+
+#endif  

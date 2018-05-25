@@ -57,6 +57,7 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(MRPT REQUIRED graphslam)
 message(STATUS "MRPT_VERSION: ${MRPT_VERSION}")
 
+# TODO - Link the mrpt libraries to the excecutable created by the VREP files 
 
 
 # User Options
