@@ -11,14 +11,10 @@ extern "C" {
 
 using namespace mrpt::obs;
 namespace vrep_bridge {
-    bool convert(const simxUChar* _dataSignal, const simxInt& _dataCount, const simxFloat& _maxScanDistance,
+    bool convert(const float range[], const simxFloat& _maxScanDistance,
         const simxFloat& _scanningAngle,const mrpt::poses::CPose3D& _pose,CObservation2DRangeScan& _obj){
-        float range[_dataCount];
-        for (int i=0;i<_dataCount;i++){
-            float x =((float*)_dataSignal)[3*i];
-            float y =((float*)_dataSignal)[3*i+1];
-            range[i] = sqrt(x*x + y*y);
-        }
+        
+        int _dataCount = sizeof(range)/sizeof(range[0]);
         _obj.rightToLeft = true;
         //_obj.sensorLabel 
         _obj.aperture = _scanningAngle;

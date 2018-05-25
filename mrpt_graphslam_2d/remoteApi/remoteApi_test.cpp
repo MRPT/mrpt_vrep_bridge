@@ -36,9 +36,15 @@ int main()
             if (simxGetStringSignal(clientID,"measuredDataAtThisTime",&dataSignal,&dataSignalSize,simx_opmode_buffer)==simx_error_noerror)
             {
                 dataCount=dataSignalSize/12;
+                float range[dataCount];
+                for (int i=0;i<dataCount;i++){
+                    float x =((float*)dataSignal)[3*i];
+                    float y =((float*)dataSignal)[3*i+1];
+                    range[i] = sqrt(x*x + y*y);
+                }
                 CPose3D sensor_pose(position[0],position[1],position[2]);
                 CObservation2DRangeScan obj;
-                bool res = convert(dataSignal,dataCount,maxScanDistance,scanningAngle,sensor_pose,obj);
+                bool res = convert(range,maxScanDistance,scanningAngle,sensor_pose,obj);
                 printf("%d\n",res);
                 
             }

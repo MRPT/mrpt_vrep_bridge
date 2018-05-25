@@ -24,7 +24,7 @@ class CPose3D;
 }
 }
 namespace vrep_bridge
-{ bool convert(const simxUChar* _dataSignal, const simxInt& _dataCount, const simxFloat& _maxScanDistance,
+{ bool convert(const float range[], const simxFloat& _maxScanDistance,
         const simxFloat& _scanningAngle,const mrpt::poses::CPose3D& _pose,mrpt::obs::CObservation2DRangeScan& _obj);
 }  
 

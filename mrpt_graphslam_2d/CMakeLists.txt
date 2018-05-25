@@ -3,12 +3,18 @@ set(PROJECT_TEST_NAME ${PROJECT_NAME}_test)
 
 
 if (BUILD_TESTING)
-  set(test_sources "test/runTests.cpp")
-  add_executable(${PROJECT_TEST_NAME}
-    ${test_sources})
+  set(test_sources
+  	include/mrpt_bridge/vrep_conversion.h
+  	remoteApi/vrep_conversion.cpp  
+  	test/runTests.cpp
+  	test/convertTest.cpp
+  	)
+  add_executable(${PROJECT_TEST_NAME} ${test_sources})
   target_link_libraries(${PROJECT_TEST_NAME}
     gtest
-    pthread)
+    pthread
+    ${MRPT_LIBS}
+    )
   set_target_properties(
     ${PROJECT_TEST_NAME}
     PROPERTIES
