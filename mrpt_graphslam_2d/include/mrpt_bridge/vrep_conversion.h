@@ -26,6 +26,8 @@ class CPose3D;
 namespace vrep_bridge
 { bool convert(const float range[], const simxFloat& _maxScanDistance,
         const simxFloat& _scanningAngle,const mrpt::poses::CPose3D& _pose,mrpt::obs::CObservation2DRangeScan& _obj);
+  
+  bool convert(const float position[3], const float quaternion[4],mrpt::poses::CPose3D& _pose);
 }  
 
 #endif  

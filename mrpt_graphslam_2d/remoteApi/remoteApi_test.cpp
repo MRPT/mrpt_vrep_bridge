@@ -21,7 +21,7 @@ int main()
     simxFloat position[3],scanningAngle,maxScanDistance;
     simxUChar* dataSignal;
     int dataSignalSize,dataCount;
-    
+    simxFloat quaternion[4];
 
     if (clientID!=-1)
     {
@@ -30,6 +30,7 @@ int main()
         while (simxGetConnectionId(clientID)!=-1){
             simxGetObjectHandle(clientID,"fastHokuyo",&handle,simx_opmode_streaming); //get object handlesimxGetObjectPosition(clientID,handle,-1,position,simx_opmode_streaming); // get object position
             simxGetObjectPosition(clientID,handle,-1,position,simx_opmode_streaming); // get object orientation(returns euler angles)
+            simxGetObjectQuaternion(clientID,handle,-1,quaternion,simx_opmode_streaming);
             simxGetStringSignal(clientID,"measuredDataAtThisTime",&dataSignal,&dataSignalSize,simx_opmode_streaming);
             simxGetFloatSignal(clientID,"scanningAngle",&scanningAngle,simx_opmode_streaming);
             simxGetFloatSignal(clientID,"maxScanDistance",&maxScanDistance,simx_opmode_streaming);
@@ -42,7 +43,8 @@ int main()
                     float y =((float*)dataSignal)[3*i+1];
                     range[i] = sqrt(x*x + y*y);
                 }
-                CPose3D sensor_pose(position[0],position[1],position[2]);
+                CPose3D sensor_pose;
+                bool pose_convert = convert(position,quaternion,sensor_pose);
                 CObservation2DRangeScan obj;
                 bool res = convert(range,maxScanDistance,scanningAngle,sensor_pose,obj);
                 printf("%d\n",res);

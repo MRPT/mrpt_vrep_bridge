@@ -4,6 +4,8 @@
 #include <cstring>  
 #include <mrpt/obs/CObservation2DRangeScan.h>
 #include "mrpt_bridge/vrep_conversion.h"
+#include <mrpt/math/CQuaternion.h>
+
 
 extern "C" {
     #include "extApi.h"
@@ -39,5 +41,12 @@ namespace vrep_bridge {
         }
         return true;
 
+    }
+
+    bool convert(const float position[3], const float quaternion[4], mrpt::poses::CPose3D& _pose){
+        mrpt::math::CQuaternionDouble q = mrpt::math::CQuaternionDouble((double)quaternion[0],(double)quaternion[1]
+            ,(double)quaternion[2],(double)quaternion[3]);
+        _pose = mrpt::poses::CPose3D(q,(double)position[0],(double)position[1],(double)position[2]);
+        return true;
     }
 }
