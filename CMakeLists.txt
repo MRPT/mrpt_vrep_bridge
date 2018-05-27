@@ -36,21 +36,30 @@ set(test_output_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test)
 set(MIN_GCC_CXX_COMPILER_VERSION "7.0.0")
 set(MIN_CLANG_CXX_COMPILER_VERSION "4.0.0")
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    if (NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_GREATER
-            ${MIN_CLANG_CXX_COMPILER_VERSION})
-    endif()
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    if (NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_GREATER
-            ${MIN_GCC_CXX_COMPILER_VERSION})
-    endif()
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") # Flags specific to Clang
+  if (NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_GREATER
+      ${MIN_CLANG_CXX_COMPILER_VERSION})
+    message(FATAL_ERROR
+      "Compiler version [${CMAKE_CXX_COMPILER_VERSION}] isn't supported. Minimum: ${MIN_CLANG_CXX_COMPILER_VERSION}")
+  endif()
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") # Flags specific to GCC
+  if (NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_GREATER
+      ${MIN_GCC_CXX_COMPILER_VERSION})
+    message(FATAL_ERROR
+      "Compiler version [${CMAKE_CXX_COMPILER_VERSION}] isn't supported. Minimum: ${MIN_GCC_CXX_COMPILER_VERSION}")
+  endif()
 else()
-    message(WARNING
-        "Compiler \"${CMAKE_CXX_COMPILER_ID}\" is not yet supported by ${PROJECT_NAME}")
+  # TODO - make it run on Windows
+  message(WARNING
+    "Compiler [${CMAKE_CXX_COMPILER_ID}] is not yet supported by ${PROJECT_NAME}")
 endif()
 
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Set the standard
+set (CMAKE_C_STANDARD 99)  # Require C99
+set (CMAKE_CXX_STANDARD 17)  # Require C++17
 
 #MRPT Lib
 ################################################################################
@@ -70,9 +79,6 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 option(BUILD_TESTING "Build all gtests" ON)
-
-# Set the C/CXX Standards that we follow
-set (CMAKE_CXX_STANDARD 14)  # Require C++14
 
 # cmake helper scripts
 ################################################################################
