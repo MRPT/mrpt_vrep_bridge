@@ -5,6 +5,7 @@
 #include <cstring>
 #define __STDC_FORMAT_MACROS  
 #include <mrpt/obs/CObservation2DRangeScan.h>
+#include <mrpt/obs/CObservationOdometry.h>
 #include <mrpt/poses/CPose3D.h>
 #include "mrpt_bridge/vrep_conversion.h"
 extern "C" {
@@ -41,3 +42,16 @@ TEST(ConvertTest,CPose3DTest){
 	EXPECT_EQ((double)pitch,pose.pitch());
 }
 
+TEST(ConvertTest,CObservationOdometryTest){
+	simxFloat position[3] ={1.00,1.00,1.00};
+	simxFloat quaternion[4] = {0.5,0.5,0.5,0.5};
+	simxFloat vel[3] ={1.00,1.00,1.00};
+	simxFloat ang_vel[4] = {0.5,0.5,0.5};
+	CObservationOdometry odometry;
+	CPose3D pose;
+	bool res = convert(position,quaternion,pose);
+	CPose2D pose_2D = CPose2D(pose);
+	EXPECT_TRUE(convert(pose,vel,ang_vel,odometry));
+	EXPECT_TRUE(odometry.hasVelocities);
+	EXPECT_EQ(pose_2D,odometry.odometry);
+}

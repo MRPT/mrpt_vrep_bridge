@@ -3,6 +3,7 @@
 #include <math.h>
 #include <cstring>  
 #include <mrpt/obs/CObservation2DRangeScan.h>
+#include <mrpt/obs/CObservationOdometry.h>
 #include <mrpt/poses/CPose3D.h>
 #include "mrpt_bridge/vrep_conversion.h"
 extern "C" {
@@ -21,7 +22,7 @@ int main()
     simxFloat position[3],scanningAngle,maxScanDistance;
     simxUChar* dataSignal;
     int dataSignalSize,dataCount;
-    simxFloat quaternion[4];
+    simxFloat quaternion[4],vel[3],angularvel[3];
 
     if (clientID!=-1)
     {
@@ -34,6 +35,11 @@ int main()
             simxGetStringSignal(clientID,"measuredDataAtThisTime",&dataSignal,&dataSignalSize,simx_opmode_streaming);
             simxGetFloatSignal(clientID,"scanningAngle",&scanningAngle,simx_opmode_streaming);
             simxGetFloatSignal(clientID,"maxScanDistance",&maxScanDistance,simx_opmode_streaming);
+            simxGetObjectVelocity(clientID,handle,vel,angularvel,simx_opmode_streaming);
+            CPose3D sensor_pose;
+            
+            bool pose_convert = convert(position,quaternion,sensor_pose);
+                
             if (simxGetStringSignal(clientID,"measuredDataAtThisTime",&dataSignal,&dataSignalSize,simx_opmode_buffer)==simx_error_noerror)
             {
                 dataCount=dataSignalSize/12;
@@ -43,13 +49,13 @@ int main()
                     float y =((float*)dataSignal)[3*i+1];
                     range[i] = sqrt(x*x + y*y);
                 }
-                CPose3D sensor_pose;
-                bool pose_convert = convert(position,quaternion,sensor_pose);
+                
                 CObservation2DRangeScan obj;
-                bool res = convert(range,maxScanDistance,scanningAngle,sensor_pose,obj);
-                printf("%d\n",res);
+                bool rangescan_convert = convert(range,maxScanDistance,scanningAngle,sensor_pose,obj);
                 
             }
+            CObservationOdometry odometry;
+            bool odometry_convert = convert(sensor_pose, vel, angularvel,odometry);
             printf("Scanning angle : %f\n",scanningAngle ); 
             printf("Handle : %u\n",handle); 
             printf("Laser Position : (%f,%f,%f) \n",position[0],position[1],position[2]);    
