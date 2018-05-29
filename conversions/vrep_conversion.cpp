@@ -19,26 +19,26 @@ namespace vrep_bridge
     *- <b>_maxScanDistance,_scanningAngle</b> -> This is a simulation parameter and can be changed in the simulator. Fetched from VREP using simxGetFloatSignal.
     *- <b>_pose</b> -> Sensor Pose.
     */
-    bool convert(const float _range[], const int _dataCount, const float& _maxScanDistance,
-        const float& _scanningAngle,const CPose3D& _pose,CObservation2DRangeScan& _obj)
-    {   _obj.rightToLeft = true;
-        _obj.aperture = _scanningAngle;
-        _obj.maxRange = _maxScanDistance;
-        _obj.sensorPose = _pose;
-        const double ang_step = _obj.aperture / (_dataCount - 1);
-        const double inv_ang_step = (_dataCount - 1) / _obj.aperture;
-        _obj.resizeScan(_dataCount);
-        for (std::size_t i = 0; i < _dataCount; i++)
+    bool convert(const float range[], const int dataCount, const float& maxScanDistance,
+        const float& scanningAngle,const CPose3D& pose,CObservation2DRangeScan& obj)
+    {   obj.rightToLeft = true;
+        obj.aperture = scanningAngle;
+        obj.maxRange = maxScanDistance;
+        obj.sensorPose = pose;
+        const double ang_step = obj.aperture / (dataCount - 1);
+        const double inv_ang_step = (dataCount - 1) / obj.aperture;
+        obj.resizeScan(dataCount);
+        for (std::size_t i = 0; i < dataCount; i++)
         {
             int j = inv_ang_step * ang_step * i;
             if (j < 0)
-                j += _dataCount;
+                j += dataCount;
             else
-                j -= _dataCount;
-            const float r = _range[j];
-            _obj.setScanRange(i, r);
-            const bool r_valid = ((_obj.scan[i] < (_maxScanDistance * 0.95)) && (_obj.scan[i] > 0));
-            _obj.setScanRangeValidity(i, r_valid);
+                j -= dataCount;
+            const float r = range[j];
+            obj.setScanRange(i, r);
+            const bool r_valid = ((obj.scan[i] < (maxScanDistance * 0.95)) && (obj.scan[i] > 0));
+            obj.setScanRangeValidity(i, r_valid);
         }
         return true;
     }
@@ -49,17 +49,17 @@ namespace vrep_bridge
     *
     *<i> Only position array is used for conversion to CPose3D in case _quaternion vector cannot be converted to CQuaternionDouble class<i> 
     */
-    bool convert(const float _position[3], const float _quaternion[4], CPose3D& _pose)
+    bool convert(const float position[3], const float quaternion[4], CPose3D& pose)
     {
-        if((mrpt::square(_quaternion[0])+mrpt::square(_quaternion[1])+mrpt::square(_quaternion[2])+mrpt::square(_quaternion[3]))-1 <1e-3)
+        if((mrpt::square(quaternion[0])+mrpt::square(quaternion[1])+mrpt::square(quaternion[2])+mrpt::square(quaternion[3]))-1 <1e-3)
         {
-            _pose = CPose3D(static_cast<double>(_position[0]),static_cast<double>(_position[1]),static_cast<double>(_position[2]));
+            pose = CPose3D(static_cast<double>(position[0]),static_cast<double>(position[1]),static_cast<double>(position[2]));
         }
         else
         {
-            CQuaternionDouble q = mrpt::math::CQuaternionDouble(static_cast<double>(_quaternion[0]),static_cast<double>(_quaternion[1])
-                ,static_cast<double>(_quaternion[2]),static_cast<double>(_quaternion[3]));
-            _pose = CPose3D(q,static_cast<double>(_position[0]),static_cast<double>(_position[1]),static_cast<double>(_position[2]));
+            CQuaternionDouble q = mrpt::math::CQuaternionDouble(static_cast<double>(quaternion[0]),static_cast<double>(quaternion[1])
+                ,static_cast<double>(quaternion[2]),static_cast<double>(quaternion[3]));
+            pose = CPose3D(q,static_cast<double>(position[0]),static_cast<double>(position[1]),static_cast<double>(position[2]));
         }
         return true;
     }
@@ -69,14 +69,14 @@ namespace vrep_bridge
     *- <b>_vel[3]</b> -> Contains x,y,z velocity value of the sensor.
     *- <b>_angularvelocity[3]</b> -> Contains angular velocity across x,y,z axis. 
     */
-    bool convert(const CPose3D& _pose3D, const float _vel[3], const float _angularvelocity[3],CObservationOdometry& _obj)
+    bool convert(const CPose3D& pose3D, const float vel[3], const float angularvelocity[3],CObservationOdometry& obj)
     {
-        CPose2D _pose2D = CPose2D(_pose3D);
-        _obj.odometry = _pose2D;
-        _obj.hasEncodersInfo = false;
-        _obj.hasVelocities = true;
-        TTwist2D _tTwist = TTwist2D(static_cast<double>(_vel[0]),static_cast<double>(_vel[1]),static_cast<double>(_angularvelocity[2])); // velocity in 2D + angular velocity along z
-        _obj.velocityLocal = _tTwist;
+        CPose2D pose2D = CPose2D(pose3D);
+        obj.odometry = pose2D;
+        obj.hasEncodersInfo = false;
+        obj.hasVelocities = true;
+        TTwist2D tTwist = TTwist2D(static_cast<double>(vel[0]),static_cast<double>(vel[1]),static_cast<double>(angularvelocity[2])); // velocity in 2D + angular velocity along z
+        obj.velocityLocal = tTwist;
         return true;
     }
 }
