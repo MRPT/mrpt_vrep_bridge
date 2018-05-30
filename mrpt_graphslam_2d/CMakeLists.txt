@@ -7,8 +7,7 @@ if (BUILD_TESTING)
 	)
 	add_executable(${PROJECT_TEST_NAME} ${test_sources})
 	target_link_libraries(${PROJECT_TEST_NAME}
-		gtest
-    	pthread
+	  gtest pthread
     )
     set_target_properties(${PROJECT_TEST_NAME}
     	PROPERTIES
@@ -27,12 +26,7 @@ if (EXISTS "$ENV{VREP}")
 	set (VREP_ROOT "$ENV{VREP}" CACHE "VREP root dir" STRING)
 	set (VREP_PATH "$ENV{VREP}/programming" CACHE "The VREP build path" STRING)
 	set (SOURCES
-		${VREP_PATH}/remoteApi/extApi.h
-		${VREP_PATH}/remoteApi/extApiPlatform.h
-		${VREP_PATH}/include/shared_memory.h
-		${VREP_PATH}/remoteApi/extApi.c
-		${VREP_PATH}/common/shared_memory.c
-		${VREP_PATH}/remoteApi/extApiPlatform.c
+	  ${VREP_PATH}/remoteApi/extApi.h ${VREP_PATH}/remoteApi/extApiPlatform.h ${VREP_PATH}/include/shared_memory.h             ${VREP_PATH}/remoteApi/extApi.c ${VREP_PATH}/common/shared_memory.c ${VREP_PATH}/remoteApi/extApiPlatform.c
 	)
 	include_directories (${VREP_PATH}/remoteApi ${VREP_PATH}/include)
 	add_definitions( -Dpthread )
@@ -41,11 +35,7 @@ if (EXISTS "$ENV{VREP}")
 	add_library (test_Client SHARED ${SOURCES})
 	add_executable(remoteApi_test remoteApi/remoteApi_test.cpp)
 	target_link_libraries(
-		remoteApi_test
-		test_Client
-		pthread
-		rt
-		conversion_lib
+	  remoteApi_test test_Client pthread rt conversion_lib
 	)
 else()
 	message(FATAL_ERROR "Can't detect V-REP installation. Have you exported the VREP environment variable to the corresponding path?")

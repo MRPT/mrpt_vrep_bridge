@@ -6,16 +6,11 @@ set(CONVERT_TEST_NAME mrpt_vrep_bridge_conversions_test)
 
 if (BUILD_TESTING)
 	set(convertTest_sources
-		include/mrpt_bridge/vrep_conversion.h
-		vrep_conversion.cpp
-		test/runTests.cpp
-		test/convertTest.cpp
+	  include/vrep_conversion.h vrep_conversion.cpp test/runTests.cpp test/convertTest.cpp
 	)
 	add_executable(${CONVERT_TEST_NAME} ${convertTest_sources})
 	target_link_libraries(${CONVERT_TEST_NAME}
-		gtest
-    	pthread
-    	${MRPT_LIBS}
+	  gtest pthread ${MRPT_LIBS}
     )
     set_target_properties(${CONVERT_TEST_NAME}
     	PROPERTIES
@@ -26,12 +21,10 @@ if (BUILD_TESTING)
 endif()
 
 set (SOURCES
-	include/mrpt_bridge/vrep_conversion.h
-	vrep_conversion.cpp
+  include/vrep_conversion.h vrep_conversion.cpp
 )
 include_directories (include)
 add_library (conversion_lib SHARED ${SOURCES})
 target_link_libraries(
-	conversion_lib
-	${MRPT_LIBS}
+  conversion_lib ${MRPT_LIBS}
 )

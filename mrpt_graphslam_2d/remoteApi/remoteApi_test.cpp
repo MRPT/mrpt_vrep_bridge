@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <math.h>
 #include <cstring>
-#include <mrpt/obs/CObservation2DRangeScan.h>
-#include <mrpt/obs/CObservationOdometry.h>
-#include <mrpt/poses/CPose3D.h>
-#include "../../conversions/include/mrpt_bridge/vrep_conversion.h"
+#include "mrpt/obs/CObservation2DRangeScan.h"
+#include "mrpt/obs/CObservationOdometry.h"
+#include "mrpt/poses/CPose3D.h"
+#include "../../conversions/include/vrep_conversion.h"
 extern "C" 
 {
     #include "extApi.h"

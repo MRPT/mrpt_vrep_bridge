@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <math.h>
 #include <cstring>
-#include <mrpt/obs/CObservation2DRangeScan.h>
-#include "mrpt_bridge/vrep_conversion.h"
-#include <mrpt/math/CQuaternion.h>
-#include <mrpt/obs/CObservationOdometry.h>
+#include "mrpt/obs/CObservation2DRangeScan.h"
+#include "vrep_conversion.h"
+#include "mrpt/math/CQuaternion.h"
+#include "mrpt/obs/CObservationOdometry.h"
 
 using namespace mrpt::obs;
 using namespace mrpt::poses;
@@ -13,14 +13,16 @@ using namespace mrpt::math;
 
 namespace vrep_bridge
 {   /**
-    *This method converts VREP laser scans into a CObservation2DRangeScan class object. It has the following arguments:
-    *- <b>_range[]</b> -> This array contains all the laser scan measurements(distances).
-    *- <b>_dataCount</b> -> Contains the size of _range[].
-    *- <b>_maxScanDistance,_scanningAngle</b> -> This is a simulation parameter and can be changed in the simulator. Fetched from VREP using simxGetFloatSignal.
-    *- <b>_pose</b> -> Sensor Pose.
+    *Converts VREP laser scans into a CObservation2DRangeScan class object. It has the following arguments:
+    *@param[out] obj Converted CObservation2DRangeScan object.
+    *@param[in] _range[] This array contains all the laser scan measurements(distances).
+    *@param[in]  _dataCount Contains the size of _range[].
+    *@param[in] _maxScanDistance Contains maximum scan distance of scanner(simulation parameter)
+    *@param[in] _scanningAngle Contains scanning angle of scanner(simulation parameter)
+    *@param[in] _pose Sensor Pose.
     */
     bool convert(const float range[], const int dataCount, const float& maxScanDistance,
-        const float& scanningAngle,const CPose3D& pose,CObservation2DRangeScan& obj)
+        const float& scanningAngle,const mrpt::poses::CPose3D& pose,mrpt::obs::CObservation2DRangeScan& obj)
     {   obj.rightToLeft = true;
         obj.aperture = scanningAngle;
         obj.maxRange = maxScanDistance;
@@ -43,13 +45,13 @@ namespace vrep_bridge
         return true;
     }
     /**
-    *This method converts sensor position,quaternion into a CPose3D class object. It has the following arguments:
-    *- <b>_position[]</b> -> This array contains x,y,z coordinates of the sensor.
-    *- <b>_quaternion</b> -> Contains the quaternion vector of the sensor.
-    *
+    *Converts sensor position,quaternion into a CPose3D class object. It has the following arguments:
+    *@param[out] pose Converted CPose3D object.
+    *@param[in] position[3] This array contains x,y,z coordinates of the sensor.
+    *@param[in] quaternion[4] Contains the quaternion vector of the sensor.
     *<i> Only position array is used for conversion to CPose3D in case _quaternion vector cannot be converted to CQuaternionDouble class<i> 
     */
-    bool convert(const float position[3], const float quaternion[4], CPose3D& pose)
+    bool convert(const float position[3], const float quaternion[4], mrpt::poses::CPose3D& pose)
     {
         if((mrpt::square(quaternion[0])+mrpt::square(quaternion[1])+mrpt::square(quaternion[2])+mrpt::square(quaternion[3]))-1 <1e-3)
         {
@@ -64,12 +66,13 @@ namespace vrep_bridge
         return true;
     }
     /**
-    *This method converts pose,velocity and angular velocity value of an object into a CObservationOdometry class object. It has the following arguments:
-    *- <b>_pose3D</b> -> Contains sensor pose.. 
-    *- <b>_vel[3]</b> -> Contains x,y,z velocity value of the sensor.
-    *- <b>_angularvelocity[3]</b> -> Contains angular velocity across x,y,z axis. 
+    *Converts pose,velocity and angular velocity value of an object into a CObservationOdometry class object. It has the following arguments:
+    *@param[out] obj Contains the converted CObservationOdometry object.
+    *@param[in] _pose3D Contains sensor pose.. 
+    *@param[in] _vel[3] Contains x,y,z velocity value of the sensor.
+    *@param[in] _angularvelocity[3] Contains angular velocity across x,y,z axis. 
     */
-    bool convert(const CPose3D& pose3D, const float vel[3], const float angularvelocity[3],CObservationOdometry& obj)
+    bool convert(const mrpt::poses::CPose3D& pose3D, const float vel[3], const float angularvelocity[3],mrpt::obs::CObservationOdometry& obj)
     {
         CPose2D pose2D = CPose2D(pose3D);
         obj.odometry = pose2D;
