@@ -12,7 +12,7 @@ using namespace mrpt::poses;
 using namespace vrep_bridge;
 
 /**
-*This unit test tests the CObservation2DRangeScan conversion method. It tests the following parameters of the object created with the functions parameters.
+* This unit test tests the CObservation2DRangeScan conversion method. It tests the following parameters of the object created with the functions parameters.
 *- <b>obj.aperture[]</b> -> scanningAngle
 *- <b>obj.maxRange</b> -> maxScanDistance
 *- <b>obj.sensorPose</b> -> sensor_pose
@@ -75,9 +75,17 @@ TEST(ConvertTest, CObservation2DRangeScanTest)
 	EXPECT_FLOAT_EQ(obj.aperture, scanningAngle);
 	EXPECT_FLOAT_EQ(obj.maxRange,maxScanDistance);
 	EXPECT_EQ(obj.sensorPose,sensor_pose);
+	for (std::size_t i = 0; i < dataCount; i++)
+	{
+		const float r = range[i];
+		const bool r_valid = ((obj.scan[i] < (maxScanDistance * 0.95)) && (obj.scan[i] > 0));
+		EXPECT_FLOAT_EQ(obj.getScanRange(i),r);
+		EXPECT_EQ(obj.getScanRangeValidity(i),r_valid);
+		EXPECT_EQ(obj.getScanSize(),dataCount);
+	}
 }
 /**
-*This unit test tests the yaw, pitch, roll values of the converted CPose3D object with the yaw,pitch,roll values calculated from the quaternion array.
+* This unit test tests the yaw, pitch, roll values of the converted CPose3D object with the yaw,pitch,roll values calculated from the quaternion array.
 *
 */
 TEST(ConvertTest,CPose3DTest)
@@ -108,7 +116,7 @@ TEST(ConvertTest,CPose3DTest)
 	EXPECT_DOUBLE_EQ(static_cast<double>(pitch),pose.pitch());
 }
 /**
-*This unit test tests the pose of the converted CObservationOdometry object with the pose of the sensor calculated from the position and quaternion values recieved from the simulator.
+* This unit test tests the pose of the converted CObservationOdometry object with the pose of the sensor calculated from the position and quaternion values recieved from the simulator.
 *
 */
 TEST(ConvertTest,CObservationOdometryTest)

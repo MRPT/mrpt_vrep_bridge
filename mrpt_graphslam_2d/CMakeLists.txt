@@ -17,27 +17,8 @@ if (BUILD_TESTING)
     	${test_output_directory}/${PROJECT_TEST_NAME})
 endif()
 
-
-#V-REP Config
-################################################################################
-
-if (EXISTS "$ENV{VREP}")
-	message(STATUS "Found VREP")
-	set (VREP_ROOT "$ENV{VREP}" CACHE "VREP root dir" STRING)
-	set (VREP_PATH "$ENV{VREP}/programming" CACHE "The VREP build path" STRING)
-	set (SOURCES
-	  ${VREP_PATH}/remoteApi/extApi.h ${VREP_PATH}/remoteApi/extApiPlatform.h ${VREP_PATH}/include/shared_memory.h             ${VREP_PATH}/remoteApi/extApi.c ${VREP_PATH}/common/shared_memory.c ${VREP_PATH}/remoteApi/extApiPlatform.c
-	)
-	include_directories (${VREP_PATH}/remoteApi ${VREP_PATH}/include)
-	add_definitions( -Dpthread )
-	add_definitions (-DNON_MATLAB_PARSING)
-	add_definitions (-DMAX_EXT_API_CONNECTIONS=255)
-	add_library (test_Client SHARED ${SOURCES})
-	add_executable(remoteApi_test remoteApi/remoteApi_test.cpp)
-	target_link_libraries(
-	  remoteApi_test test_Client pthread rt conversion_lib
-	)
-else()
-	message(FATAL_ERROR "Can't detect V-REP installation. Have you exported the VREP environment variable to the corresponding path?")
-
-endif()  
+add_definitions (-DNON_MATLAB_PARSING)
+add_definitions (-DMAX_EXT_API_CONNECTIONS=255)
+include_directories (${VREP_PATH}/remoteApi ${VREP_PATH}/include)
+add_executable(remoteApi_test remoteApi/remoteApi_test.cpp)
+target_link_libraries(remoteApi_test vrep_lib pthread rt conversion_lib)
