@@ -1,8 +1,8 @@
 #ifndef VREP_CONVERSION_H
 #define VREP_CONVERSION_H
 
-#include <stdint.h>
-#include <string>
+#include <cstdint>
+#include <cstring>
 
 namespace mrpt::obs
 {

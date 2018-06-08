@@ -1,6 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
 #include <cstring>
 #include "mrpt/obs/CObservation2DRangeScan.h"
 #include "mrpt/obs/CObservationOdometry.h"

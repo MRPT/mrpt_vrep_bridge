@@ -19,6 +19,5 @@ endif()
 
 add_definitions (-DNON_MATLAB_PARSING)
 add_definitions (-DMAX_EXT_API_CONNECTIONS=255)
-include_directories (${VREP_PATH}/remoteApi ${VREP_PATH}/include)
 add_executable(remoteApi_test remoteApi/remoteApi_test.cpp)
 target_link_libraries(remoteApi_test vrep_lib pthread rt conversion_lib)
