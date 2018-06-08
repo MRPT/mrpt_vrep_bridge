@@ -61,6 +61,26 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 set (CMAKE_C_STANDARD 99)  # Require C99
 set (CMAKE_CXX_STANDARD 17)  # Require C++17
 
+#V-REP Config
+################################################################################
+
+if (EXISTS "$ENV{VREP}")
+  message(STATUS "Found VREP")
+  set (VREP_ROOT "$ENV{VREP}" CACHE "VREP root dir" STRING)
+  set (VREP_PATH "$ENV{VREP}/programming" CACHE "The VREP build path" STRING)
+  set (VREP_SOURCES
+    ${VREP_PATH}/remoteApi/extApi.h ${VREP_PATH}/remoteApi/extApiPlatform.h ${VREP_PATH}/include/shared_memory.h
+    ${VREP_PATH}/remoteApi/extApi.c ${VREP_PATH}/common/shared_memory.c ${VREP_PATH}/remoteApi/extApiPlatform.c
+  )
+  include_directories (${VREP_PATH}/remoteApi ${VREP_PATH}/include)
+  add_definitions( -Dpthread )
+  add_definitions (-DNON_MATLAB_PARSING)
+  add_definitions (-DMAX_EXT_API_CONNECTIONS=255)
+  add_library (vrep_lib SHARED ${VREP_SOURCES})
+else()
+  message(FATAL_ERROR "Can't detect V-REP installation. Have you exported the VREP environment variable to the corresponding path?")
+endif()
+
 #MRPT Lib
 ################################################################################
 find_package(MRPT REQUIRED graphslam)
@@ -121,23 +141,3 @@ configure_file(cmake/${PROJECT_NAME}ConfigVersion.cmake.in
 # TODO - How to use it
 configure_file(cmake/${PROJECT_NAME}ConfigVersion.hpp.in
     "${PROJECT_BINARY_DIR}/${PROJECT_NAME}.hpp" @ONLY)
-
-#V-REP Config
-################################################################################
-
-if (EXISTS "$ENV{VREP}")
-  message(STATUS "Found VREP")
-  set (VREP_ROOT "$ENV{VREP}" CACHE "VREP root dir" STRING)
-  set (VREP_PATH "$ENV{VREP}/programming" CACHE "The VREP build path" STRING)
-  set (VREP_SOURCES
-    ${VREP_PATH}/remoteApi/extApi.h ${VREP_PATH}/remoteApi/extApiPlatform.h ${VREP_PATH}/include/shared_memory.h
-    ${VREP_PATH}/remoteApi/extApi.c ${VREP_PATH}/common/shared_memory.c ${VREP_PATH}/remoteApi/extApiPlatform.c
-  )
-  include_directories (${VREP_PATH}/remoteApi ${VREP_PATH}/include)
-  add_definitions( -Dpthread )
-  add_definitions (-DNON_MATLAB_PARSING)
-  add_definitions (-DMAX_EXT_API_CONNECTIONS=255)
-  add_library (vrep_lib SHARED ${VREP_SOURCES})
-else()
-  message(FATAL_ERROR "Can't detect V-REP installation. Have you exported the VREP environment variable to the corresponding path?")
-endif()
